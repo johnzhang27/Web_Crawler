@@ -4,6 +4,7 @@ import html
 import string
 import codecs
 import time
+import datetime
 import pymysql
 from bs4 import BeautifulSoup
 pymysql.install_as_MySQLdb()
@@ -15,6 +16,7 @@ class alberta_case(object):
     in_hospital = None
     in_intensive_care = None
     deaths = None
+    date = None
 class save_daily_case_num(object):
     def __init__(self,items):
         self.host = 'localhost'
@@ -29,8 +31,8 @@ class save_daily_case_num(object):
         cur = db.cursor()
         parameters = []
         for item in items:
-            parameters.append((item.region, item.confirmed_cases, item.active_cases,item.recovered_cases,item.in_hospital,item.in_intensive_care,item.deaths))
-        sql="insert into alberta_cases(region,confirmed_cases,active_cases,recovered_cases,in_hospital,in_intensive_care,deaths) values(%s, %s, %s, %s, %s, %s, %s )"  
+            parameters.append((item.region, item.confirmed_cases, item.active_cases,item.recovered_cases,item.in_hospital,item.in_intensive_care,item.deaths,item.date))
+        sql="insert into alberta_cases(region,confirmed_cases,active_cases,recovered_cases,in_hospital,in_intensive_care,deaths,date) values(%s, %s, %s, %s, %s, %s, %s, %s )"  
 
         try:
             ret=cur.executemany(sql,parameters)
@@ -47,6 +49,7 @@ if __name__ == '__main__':
     req = requests.get(url=target)
     html = req.text
     bf = BeautifulSoup(html)
+    #print(bf)
     texts = bf.tbody.find_all('tr')
     #print(texts)
     for tag in texts:
@@ -60,6 +63,7 @@ if __name__ == '__main__':
         item.in_hospital = tags[3].getText().strip()
         item.in_intensive_care = tags[4].getText().strip()
         item.deaths = tags[5].getText().strip()
+        item.date = datetime.datetime.now()
 
         items.append(item)
 
