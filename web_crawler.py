@@ -7,6 +7,7 @@ import time
 import datetime
 import pymysql
 from bs4 import BeautifulSoup
+import password
 pymysql.install_as_MySQLdb()
 class alberta_case(object):
     region = None
@@ -22,7 +23,7 @@ class save_daily_case_num(object):
         self.host = 'localhost'
         self.port = 3306
         self.user = 'root'
-        self.password = ''
+        self.password = password.password
         self.db = 'COVID19_Alberta'
         self.run(items)
     def run(self,items):
